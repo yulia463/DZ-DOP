@@ -1,5 +1,6 @@
 import React, {ChangeEvent, useState, KeyboardEvent} from 'react';
 import {FilterValuesType, TasksType} from './App';
+import {SuperButton} from "./components/SuperButton";
 
 
 // export type TaskType = {
@@ -34,14 +35,22 @@ export function Todolist(props: PropsType) {
             // addTask();
         }
     }
-
-
+     const removeTodolistHandler = () => {
+        props.removeTodolist(props.id)
+     }
+    const addTaskHandler = () => {
+        props.addTask(title, props.id)
+        setTitle("")
+    }
+    const removeTaskHandler = (taskId: string) => {
+        props.removeTask(taskId, props.id)
+    }
+    const tsarChangeFilter = (valueFilter:FilterValuesType) => {
+       props.changeFilter(valueFilter,props.id)
+    }
     return <div>
         <h3> {props.title}
-            <button onClick={() => {
-                'removeTodolist'
-            }}>x
-            </button>
+            <SuperButton callback={removeTodolistHandler} name={"X"}/>
 
         </h3>
         <div>
@@ -50,7 +59,7 @@ export function Todolist(props: PropsType) {
                    onKeyPress={onKeyPressHandler}
                    className={error ? "error" : ""}
             />
-            <button onClick={() => {'addTask'}}>+</button>
+            <SuperButton callback={addTaskHandler} name={"+"}/>
             {error && <div className="error-message">{error}</div>}
         </div>
         <ul>
@@ -61,33 +70,27 @@ export function Todolist(props: PropsType) {
                         props.changeTaskStatus(t.taskId, newIsDoneValue, props.id);
                     }
 
+
                     return <li key={t.taskId} className={t.isDone ? "is-done" : ""}>
                         <input type="checkbox" onChange={onChangeHandler} checked={t.isDone}/>
                         <span>{t.title}</span>
-                        <button onClick={() => {'removeTask'}}>x</button>
+
+                        <SuperButton callback={() => removeTaskHandler(t.taskId)} name={"x"}/>
                     </li>
                 })
             }
         </ul>
         <div>
-            <button className={props.filter === 'all' ? "active-filter" : ""}
-                    onClick={()=>{}}>All
-            </button>
-            <button className={props.filter === 'active' ? "active-filter" : ""}
-                    onClick={()=>{}}>Active
-            </button>
-            <button className={props.filter === 'completed' ? "active-filter" : ""}
-                    onClick={()=>{}}>Completed
-            </button>
+            <SuperButton callback={ () => tsarChangeFilter ("all")} name={"All"}/>
+            <SuperButton callback={ () => tsarChangeFilter ("active")} name={"Active"}/>
+            <SuperButton callback={ () => tsarChangeFilter ("completed")} name={"Completed"}/>
+
         </div>
         <p></p>
-        {
-            props.students.map((el) => {
+        {props.students.map((el) => {
                 return (
                     <div>{el}</div>
-                )
-            })
-        }
+                )})}
     </div>
 }
 
